@@ -1,31 +1,33 @@
 package org.example;
 
 import org.example.config.Database;
-import org.example.model.*;
+import org.example.service.ClientService;
 
 import java.util.List;
 
 public class Main {
     public static void main(String[] args) {
-        List<MaxProjectCountClient> clients = DatabaseQueryService.findMaxProjectsClient();
-        printList(clients);
+        ClientService clientService = new ClientService(Database.getConnection());
+        long id = clientService.create("Express");
+        System.out.println("id = " + id);
 
-        List<MaxSalaryWorker> maxSalaryWorkers = DatabaseQueryService.findMaxSalaryWorker();
-        printList(maxSalaryWorkers);
+        String name = clientService.getById(id);
+        System.out.println("name = " + name);
 
-        List<LongestProject> longestProjects = DatabaseQueryService.findLongestProject();
-        printList(longestProjects);
+        clientService.setName(id, "AliExpress");
+        name = clientService.getById(id);
+        System.out.println("name = " + name);
 
-        List<YoungestEldestWorker> youngestEldestWorkers = DatabaseQueryService.findYoungestEldestWorkers();
-        printList(youngestEldestWorkers);
+        clientService.deleteById(id);
 
-        List<ProjectPrice> projectPrices = DatabaseQueryService.findProjectPrices();
-        printList(projectPrices);
+        printList(clientService.listAll());
 
         Database.getInstance().closeConnection();
     }
 
     private static <T> void printList(List<T> list) {
+        System.out.println();
+        System.out.println("==============================================");
         for (T element : list) {
             System.out.println(element);
         }

@@ -1,4 +1,4 @@
-package org.example;
+package org.example.service;
 
 import org.example.model.*;
 import org.example.utils.sql.Query;

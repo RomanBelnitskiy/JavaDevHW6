@@ -1,6 +1,7 @@
 package org.example.config;
 
 import org.example.utils.PropertyReader;
+import org.flywaydb.core.Flyway;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -15,6 +16,7 @@ public class Database {
         try {
             String url = PropertyReader.getConnectionUrlForH2();
             connection = DriverManager.getConnection(url);
+            flywayMigrate(url);
         } catch (SQLException ex) {
             throw new RuntimeException("Can not create connection");
         }
@@ -34,5 +36,10 @@ public class Database {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    private void flywayMigrate(String url) {
+        Flyway flyway = Flyway.configure().dataSource(url, "", "").load();
+        flyway.migrate();
     }
 }
